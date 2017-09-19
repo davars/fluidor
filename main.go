@@ -29,20 +29,17 @@ func main() {
 
 	// Creates a client.
 	client, err := pubsub.NewClient(ctx, projectID)
-	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
-	}
+	check(err)
 
 	// Sets the name for the new topic.
 	topicName := "test-fluidor-logs"
 
-	// Creates the new topic.
-	topic, err := client.CreateTopic(ctx, topicName)
-	if err != nil {
-		log.Fatalf("Failed to create topic: %v", err)
-	}
+	topic := client.Topic(topicName)
 
-	fmt.Printf("Topic %v created.\n", topic)
+	exists, err := topic.Exists(ctx)
+	check(err)
+
+	log.Printf("Topic: %+v %t", topic, exists)
 
 	j, err := sdjournal.NewJournal()
 	check(err)
